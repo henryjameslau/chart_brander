@@ -1,0 +1,63 @@
+
+<!-- saved from url=(0344)https://www.ons.gov.uk/embed?uri=/economy/inflationandpriceindices/bulletins/consumerpriceinflation/sept2016/cc765147&notes=false&source=false&subtitle=false&title=false&initialWidth=1024&childId=chart1&parentTitle=How%20to%20properly%20export%20SVG%20D3%20visualization%20to%20PNG%20or%20JPEG&parentUrl=http%3A%2F%2Flocalhost%3A5000%2Fbranding -->
+<html class="embedded"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="/assets/css/old-ie.css"/>
+    <![endif]-->
+<!--[if IE 9]>
+    <link rel="stylesheet" type="text/css" href="/assets/css/ie-9.css">
+    <![endif]-->
+<!--[if gt IE 9]><!-->
+<link rel="stylesheet" type="text/css" href="./main.css">
+<!--[endif]---->
+</head>
+<body marginheight="0" class="js"><div class="section__content--static-markdown">
+<div id="chart-cc765147" data-filename="cc765147" data-uri="/economy/inflationandpriceindices/bulletins/consumerpriceinflation/sept2016/cc765147" class="embedded-chart" data-highcharts-chart="0"></div>
+<script type="text/javascript" src="./main.js"></script>
+<script type="text/javascript" src="./app.js"></script>
+<script type="text/javascript" src="./pym.v1.min.js"></script>
+<script>
+
+    var pymChild = new pym.Child({renderCallback: update});
+
+    function update() {
+
+      var chartContainer = $(".embedded-chart");
+      if (!chartContainer.length) {
+        return;
+      }
+
+      chartContainer.each(function () {
+        var $this = $(this);
+        var id = $this.attr('id');
+        var chartId = $this.data('filename');
+        var chartWidth = $this.width();
+        var chartUri = $this.data('uri');
+        $this.empty();
+
+        $.get("/chartconfig", {
+              uri: chartUri,
+              width: chartWidth
+            },
+            function () {
+              var chartConfig = window["chart-" + chartId];
+              if (chartConfig) {
+                chartConfig.chart.marginTop = 25;
+                chartConfig.chart.offset = 0;
+                chartConfig.title = {text:''};
+                chartConfig.subtitle = {text:''};
+                chartConfig.source = {text:''};
+                // Build chart from config endpoint
+                chartConfig.chart.renderTo = id;
+                new Highcharts.Chart(chartConfig);
+                delete window["chart-" + chartId]; //clear data from window object after rendering
+
+                pymChild.sendHeight()
+              }
+            }, "script");
+      });
+    }
+
+  </script>
+</div>
+</body></html>

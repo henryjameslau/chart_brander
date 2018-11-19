@@ -1,0 +1,75 @@
+<html>
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/data.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <!-- <script src="https://www.ons.gov.uk/chartconfig?uri=peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualmidyearpopulationestimates/mid2017/ecf123e5"></script> -->
+  <script type="text/javascript" src="//pym.nprapps.org/pym.v1.min.js"></script>
+  <script src="https://www.google.com/jsapi"></script>
+
+  <body>
+
+    <div id="chart-rere" class="embedded-chart"></div>
+
+  </body>
+
+  <script>
+
+    const test = document.getElementById('test');
+    function createNode(element) {
+      return document.createElement(element); // Create the type of element you pass in the parameters
+    }
+
+    function append(parent, el) {
+      return parent.appendChild(el); // Append the second parameter(element) to the first one
+    }
+
+
+var pymChild = new pym.Child({renderCallback: update});
+
+function update() {
+  var chartUri = "https://www.ons.gov.uk/embed?uri=/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/uklabourmarket/july2016/58b065dc"
+	console.log(chartUri.split("/"))
+	var chartContainer = $(".embedded-chart");
+  if (!chartContainer.length) {
+    return;
+  }
+  chartContainer.each(function () {
+    var $this = $(this);
+    var id = $this.attr('id');
+    var chartId = "58b065dc";
+    // var chartWidth = $this.width();
+    // var chartUri = $this.data('uri');
+    $this.empty();
+    $.get("https://www.ons.gov.uk/chartconfig?uri=/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/uklabourmarket/july2016/58b065dc", {
+
+        },
+        function (data) {
+
+          var chartConfig = window["chart-" + chartId];
+
+          if (chartConfig) {
+
+            // chartConfig.chart.marginTop = 0;
+            chartConfig.chart.offset = 0;
+            chartConfig.title = {text:''};
+            chartConfig.subtitle = {text:''};
+            chartConfig.source = {text:''};
+            chartConfig.legend = {verticalAlign:'top'};
+						chartConfig.legend = {y:-350};
+
+            // Build chart from config endpoint
+            chartConfig.chart.renderTo = id;
+            new Highcharts.Chart(chartConfig);
+            delete window["chart-" + chartId]; //clear data from window object after rendering
+            console.log (chartConfig)
+            pymChild.sendHeight()
+          }
+        }, "script");
+  });
+}
+
+  </script>
+
+</html>

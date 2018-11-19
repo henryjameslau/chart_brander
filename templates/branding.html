@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>How to properly export SVG D3 visualization to PNG or JPEG</title>
+	<meta charset="utf-8">
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600|Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.4/rgbcolor.min.js"></script>
+	<!-- Optional if you want blur -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stackblur-canvas/1.4.1/stackblur.min.js"></script>
+	<!-- Main canvg code -->
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
+	<!-- <script src="lib/html2canvas.js"></script> -->
+	<script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://pym.nprapps.org/pym.v1.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/data.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+	<style type="text/css">
+
+		#viz {
+		 	float: left;
+		}
+
+		#title {
+			height: 90px;
+		}
+
+		#title div{
+			padding-bottom: 40px;
+			/* padding-left: 25px; */
+			/* padding-right: 25px; */
+			line-height: 32px;
+			padding-top: 20px;
+			font-size: 24px;
+			color: #323132;
+			font-weight: bold;
+			font-family: "Open Sans"
+			/* width: 100%;
+			height: 100%; */
+		}
+
+		#source div {
+
+		}
+
+		#container {
+
+			width: 1024px;
+			margin-right: 25px;
+			margin-left: 25px;
+			/* padding-right: 25px; */
+			/* height: 512px; */
+		}
+
+		#chart1 {
+			/* padding-right: 25px; */
+			/* padding-left: 25px; */
+		}
+
+		#foot {
+			height: 98px;
+		}
+
+		#inner-container {
+			/* padding-left: 25px; */
+			/* padding-bottom: 35px; */
+			/* padding-right: 25px; */
+			padding-top: 40px;
+
+		}
+
+		#source-container, #logo-container {
+			display: inline;
+
+		}
+
+		#logo-container {
+			float: right;
+		}
+
+		#logo-container img {
+			width: 300px;
+			height: 26px;
+		}
+
+		#source, #source-text {
+			font-family: "Open Sans";
+			font-size: 16px;
+			line-height: 20px;
+		}
+
+		#source {
+			font-weight: bold;
+		}
+
+
+	</style>
+</head>
+
+<body>
+	<!-- <div>
+		<button id='saveButton'>Export my D3 visualization to PNG</button>
+	</div> -->
+	<form>
+		Title:
+		<br>
+		<input id='change-title' type="text" name="title" value=""><br> Link to visualisation:
+		<br>
+		<input id='change-link' type="text" name="link" value="">
+		<br> Source:
+		<br>
+		<input id='change-source' type="text" name="source" value="">
+		<br>
+		<br>
+    <p>File path</p>
+    <input id='change-path' type="text" name="path" required>
+    <br>
+    <br>
+		<input id='submit-title' type="button" value="Submit">
+	</form>
+	<div id="viz">
+		<div id="container">
+			<div id="title"></div>
+			<div id="chart1" class="embedded-chart"></div>
+			<div id="foot">
+				<div id="inner-container">
+					<div id="source-container">
+						<span id='source'>Source: </span><span id='source-text'></span>
+					</div>
+					<div id="logo-container">
+						<img src="{{ url_for('static', filename='logo.svg')}}" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!-- <iframe id="datawrapper-chart-SGu8e" src="//datawrapper.dwcdn.net/SGu8e/4/" scrolling="no" frameborder="0" allowtransparency="true" style="width: 0; min-width: 100% !important;" height="400"></iframe><script type="text/javascript">if("undefined"==typeof window.datawrapper)window.datawrapper={};window.datawrapper["SGu8e"]={},window.datawrapper["SGu8e"].embedDeltas={"100":493,"200":431,"300":417,"400":400,"500":400,"700":400,"800":400,"900":400,"1000":400},window.datawrapper["SGu8e"].iframe=document.getElementById("datawrapper-chart-SGu8e"),window.datawrapper["SGu8e"].iframe.style.height=window.datawrapper["SGu8e"].embedDeltas[Math.min(1e3,Math.max(100*Math.floor(window.datawrapper["SGu8e"].iframe.offsetWidth/100),100))]+"px",window.addEventListener("message",function(a){if("undefined"!=typeof a.data["datawrapper-height"])for(var b in a.data["datawrapper-height"])if("SGu8e"==b)window.datawrapper["SGu8e"].iframe.style.height=a.data["datawrapper-height"][b]+"px"});</script>-->
+	</div>
+	<script type="text/javascript">
+
+  var pymChild = new pym.Child();
+	// console.log(pymParent)
+		// var titleHeight = 100;
+		// var titleWidth = 300;
+		var svgTitle = d3.select('#title').append('div').attr('id', 'svgTitle')
+		svgTitle
+			.text('SVG title');
+
+		var svgSource = d3.select('#source-text')
+		svgSource
+			.text('SVG source');
+
+      function update(link) {
+				// link = '/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/uklabourmarket/july2016/58b065dc'
+				console.log(link)
+        var chartUri = "https://www.ons.gov.uk/embed?uri=" + link;
+				console.log(chartUri)
+      	console.log(chartUri.split("/").pop())
+      	var chartContainer = $(".embedded-chart");
+        if (!chartContainer.length) {
+          return;
+        }
+        chartContainer.each(function () {
+          var $this = $(this);
+          var id = $this.attr('id');
+          var chartId = chartUri.split("/").pop();
+          var chartWidth = $this.width();
+          var chartHeight = $this.height()
+					var configUri = "https://www.ons.gov.uk/chartconfig?uri=" + link;
+          console.log(configUri)
+          // var chartUri = $this.data('uri');
+          $this.empty();
+          $.get(configUri, {
+              uri: chartUri,
+              width: chartWidth,
+              height: chartHeight
+              },
+              function (data) {
+
+                var chartConfig = window["chart-" + chartId];
+
+                if (chartConfig) {
+									scalefactor=chartWidth/chartConfig.chart.width
+									console.log(chartConfig)
+
+                  // chartConfig.chart.marginTop = 0;
+                  chartConfig.chart.offset = 0;
+                  chartConfig.title = {text:''};
+                  chartConfig.subtitle = {text:''};
+                  chartConfig.source = {text:''};
+									// chartConfig.chart = {width:chartWidth}
+									// chartConfig.chart.height = chartConfig.chart.height*scalefactor;
+
+									chartConfig.chart.width = chartConfig.chart.width*scalefactor;
+									chartConfig.chart.height = 573;
+									chartConfig.chart.marginBottom = 50
+									chartConfig.chart.marginTop = 70
+									chartConfig.legend = {align:'left', verticalAlign:'top'};
+
+                  // chartConfig.legend = {verticalAlign:'top'};
+
+									// chartConfig.chart.type = 'bar'
+      						// chartConfig.legend = {y:-350};
+
+                  // Build chart from config endpoint
+                  chartConfig.chart.renderTo = id;
+                  new Highcharts.Chart(chartConfig);
+                  delete window["chart-" + chartId]; //clear data from window object after rendering
+
+                  pymChild.sendHeight()
+                }
+              }, "script");
+        });
+      }
+
+
+
+
+		d3.select('#submit-title').on('click', function() {
+			title = d3.select('#change-title').property('value');
+			d3.select('#svgTitle')
+				.text(title);
+
+			source = d3.select('#change-source').property('value');
+			d3.select('#source-text')
+				.text(source);
+
+			link = d3.select('#change-link').property('value');
+			update(link)
+			// pymParent = new pym.Parent('chart1', link, {});
+
+		});
+update('/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/bulletins/uklabourmarket/july2016/58b065dc')
+
+
+
+		// d3.select('#saveButton').on('click', function() {
+		// 	var browser = document.querySelector('iframe');
+		// 	console.log(browser)
+		//
+		// 	var request = browser.getScreenshot(100, 100);
+		//
+		// 	request.onsuccess = function() {
+		// 		var blob = request.result;
+		// 		var url = URL.createObjectURL(blob);
+		// 	}
+		//
+		//
+		//
+		//
+		//
+		// 	var node = $('#viz');
+		// 	console.log(node)
+		//
+		// 	svgToCanvas(node);
+		//
+		// 	function svgToCanvas(targetElem) {
+		// 		//  var nodesToRecover = [];
+		// 		//  var nodesToRemove = [];
+		// 		//
+		// 		//
+		// 		//  var iframe = document.getElementById("viz");
+		// 		//  var innerDoc = iframe.contentDocument;
+		// 		//
+		// 		//  var svgElems = innerDoc.body.getElementsByTagName('svg');
+		// 		//
+		// 		// // var svgElems = document.getElementsByTagName("svg");
+		// 		//
+		// 		//  console.log(svgElems);
+		// 		//
+		// 		//  for (var i=0; i<svgElems.length; i++) {
+		// 		//      var node = svgElems[i];
+		// 		//      var parentNode = node.parentNode;
+		// 		//      var svg = parentNode.innerHTML;
+		// 		//
+		// 		//      var canvas = document.createElement('canvas');
+		// 		//
+		// 		//      canvg(canvas, svg);
+		// 		//
+		// 		//      nodesToRecover.push({
+		// 		//          parent: parentNode,
+		// 		//          child: node
+		// 		//      });
+		// 		//      parentNode.removeChild(node);
+		// 		//
+		// 		//      nodesToRemove.push({
+		// 		//          parent: parentNode,
+		// 		//          child: canvas
+		// 		//      });
+		// 		//
+		// 		//      parentNode.appendChild(canvas);
+		// 		//  }
+		//
+		//
+		//
+		// 		//var svgElements= node.contents().find('svg');
+		//
+		// 		var svgElements = $("#viz").contents().find('svg');
+		//
+		// 		// console.log(svgElements)
+		//
+		// 		//replace all svgs with a temp canvas
+		// 		svgElements.each(function(i) {
+		//
+		// 			// console.log(i)
+		//
+		// 			if (i === 0) {
+		// 				var canvas, xml;
+		// 				var doc = document.getElementById('viz').contentWindow.document;
+		// 				doc.open();
+		// 				doc.write('Test');
+		//
+		// 				//
+		// 				// var iframe = document.getElementById("viz");
+		// 				// console.log(iframe)
+		// 				// var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+		// 				// var container = innerDoc.body.getElementById('graphic').iframe.contentDocument.body;
+		// 				// // d3.select("#graphic").remove();
+		// 				// console.log(container)
+		//
+		// 				d3.select('#graphic').append("canvas").attr("id", "screenShotTempCanvas");
+		// 				//canvas.className = "screenShotTempCanvas";
+		// 				//convert SVG into a XML string
+		// 				xml = (new XMLSerializer()).serializeToString(this);
+		//
+		// 				// Removing the name space as IE throws an error
+		// 				xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+		// 				// console.log(xml)
+		//
+		// 				//draw the SVG onto a canvas
+		// 				canvg(document.getElementById('screenShotTempCanvas'), xml);
+		// 				$(canvas).insertAfter(this);
+		// 				//hide the SVG element
+		// 				this.className = "tempHide";
+		// 				console.log(this)
+		// 				$(this).remove();
+		//
+		// 				var iframe = document.getElementById('viz');
+		//
+		// 				var iframediv = iframe.contentWindow.document;
+		//
+		//
+		// 				var can = d3.select('#screenShotTempCanvas')
+		// 				console.log(can.node())
+		// 				iframediv.body.appendChild(can.node());
+		// 				doc.close();
+		// 			}
+		// 		});
+		//
+		// 		setTimeout(function() {
+		// 			html2canvas(document.body, {
+		// 				allowTaint: true,
+		// 				useCORS: false,
+		// 				removeContainer: false
+		// 			}).then(function(canvas) {
+		// 				document.body.appendChild(canvas);
+		// 			});
+		// 		}, 5000);
+		//
+		//
+		//
+		// 	}
+		//
+		//
+		//
+		// 	// domtoimage.toPng(node)
+		// 	//     .then(function (dataUrl) {
+		// 	//         var img = new Image();
+		// 	//         img.src = dataUrl;
+		// 	//         document.body.appendChild(img);
+		// 	//     })
+		// 	//     .catch(function (error) {
+		// 	//         console.error('oops, something went wrong!', error);
+		// 	//     });
+		//
+		// 	//
+		// 	//  html2canvas(document.body, {
+		// 	//     allowTaint:true,
+		// 	//     useCORS:true,
+		// 	//     onrendered: function(canvas) {
+		// 	//         document.body.appendChild(canvas);
+		// 	//     }
+		// 	// });
+		//
+		// 	// html2canvas(document.body, {allowTaint:true,
+		// 	// useCORS:true}).then(function(canvas) {
+		// 	//    useCORS: true,
+		// 	// 	 //allowTaint: true,
+		// 	//     document.body.appendChild(canvas);
+		// 	// });
+		//
+		//
+		//
+		// 	// function save( dataBlob, filesize ){
+		// 	// 	saveAs( dataBlob, 'D3 vis exported to PNG.png' ); // FileSaver.js function
+		// 	// }
+		// });
+	</script>
+</body>
+
+</html>

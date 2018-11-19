@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Screenshot Generator</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600|Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.4/rgbcolor.min.js"></script>
+    <!-- Optional if you want blur -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stackblur-canvas/1.4.1/stackblur.min.js"></script>
+    <!-- Main canvg code -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
+    <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://pym.nprapps.org/pym.v1.min.js"></script>
+
+    <style media="screen">
+      input {
+        display: block;
+      }
+    </style>
+</head>
+<body>
+<div align="center">
+<!-- {% if screenshot %}
+  <h2>Screenshot</h2>
+    <img src="{{ MEDIA_URL }}image.png">
+  {% endif %} -->
+  <div id="container">
+    <div id="title"></div>
+    <div id="chart1"></div>
+    <div id="foot">
+      <div id="inner-container">
+        <div id="source-container">
+          <span id='source'>Source: </span><span id='source-text'></span>
+        </div>
+        <div id="logo-container">
+          <!-- <img src="logo.svg" alt=""> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <iframe id="datawrapper-chart-SGu8e" src="//datawrapper.dwcdn.net/SGu8e/4/" scrolling="no" frameborder="0" allowtransparency="true" style="width: 0; min-width: 100% !important;" height="400"></iframe><script type="text/javascript">if("undefined"==typeof window.datawrapper)window.datawrapper={};window.datawrapper["SGu8e"]={},window.datawrapper["SGu8e"].embedDeltas={"100":493,"200":431,"300":417,"400":400,"500":400,"700":400,"800":400,"900":400,"1000":400},window.datawrapper["SGu8e"].iframe=document.getElementById("datawrapper-chart-SGu8e"),window.datawrapper["SGu8e"].iframe.style.height=window.datawrapper["SGu8e"].embedDeltas[Math.min(1e3,Math.max(100*Math.floor(window.datawrapper["SGu8e"].iframe.offsetWidth/100),100))]+"px",window.addEventListener("message",function(a){if("undefined"!=typeof a.data["datawrapper-height"])for(var b in a.data["datawrapper-height"])if("SGu8e"==b)window.datawrapper["SGu8e"].iframe.style.height=a.data["datawrapper-height"][b]+"px"});</script>-->
+  </div>
+
+</div>
+</body>
+<script type="text/javascript">
+console.log('jure')
+
+var pymParent = new pym.Parent('chart1', "{{ link }}", {});
+console.log('{{ link }}')
+// console.log(pymParent)
+  // var titleHeight = 100;
+  // var titleWidth = 300;
+  var svgTitle = d3.select('#title').append('div').attr('id', 'svgTitle')
+  svgTitle
+    .text('{{ title }}');
+
+  var svgSource = d3.select('#source-text')
+  svgSource
+    .text('{{ source }}');
+
+
+  </script>
+
+</html>
