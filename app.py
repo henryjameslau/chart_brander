@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask import render_template
 
 from selenium import webdriver
@@ -27,6 +27,12 @@ def test():
 
 @app.route('/chart', methods=['POST', 'GET'])
 def chart():
+    def serve_pil_image(pil_img):
+        img_io = BytesIO()
+        pil_img.save(img_io, 'PNG')
+        img_io.seek(0)
+        return send_file(img_io, mimetype='image/png')
+    
     template = 'chart.html'
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -80,7 +86,7 @@ def chart():
 
         im = Image.open(BytesIO(png)
         im = im.crop((int(x), int(y), int(width), int(height)))
-        im.save(path + 'image.png')
+        # im.save(path + 'image.png')
 
         # image = request.files[path]
         #
@@ -90,7 +96,7 @@ def chart():
 
 
         # driver.quit()
-        return 'Your chart is saved in ' + path
+        return serve_pil_image(im)
     else:
         return 'nothing'
 
