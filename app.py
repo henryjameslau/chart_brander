@@ -2,7 +2,9 @@ from flask import Flask, request
 from flask import render_template
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from PIL import Image
+from io import BytesIO
 import time
 import base64
 
@@ -26,6 +28,10 @@ def test():
 @app.route('/chart', methods=['POST', 'GET'])
 def chart():
     template = 'chart.html'
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("window-size=1980,1980")
+    chrome_options.add_argument("--hide-scrollbars")
     driver = webdriver.Chrome()
 
     if request.method=='POST':
@@ -58,7 +64,7 @@ def chart():
         location = element.location
         size = element.size
 
-        driver.save_screenshot(path + "shot.png")
+        png=driver.get_screenshot_as_png()
         driver.quit()
 
         x = location['x']
@@ -72,7 +78,7 @@ def chart():
         width = x + w
         height = y + h
 
-        im = Image.open(path + 'shot.png')
+        im = Image.open(BytesIO(png)
         im = im.crop((int(x), int(y), int(width), int(height)))
         im.save(path + 'image.png')
 
