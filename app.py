@@ -52,8 +52,9 @@ def chart():
     chrome_options.add_argument("window-size=1980,1980")
     chrome_options.add_argument("--hide-scrollbars")
 
-
     driver = webdriver.Chrome(chrome_options=chrome_options)
+
+
 
     if request.method=='POST':
 
@@ -85,7 +86,6 @@ def chart():
         location = element.location
         size = element.size
 
-        png=None;
         png=driver.get_screenshot_as_png()
         driver.quit()
 
@@ -101,7 +101,8 @@ def chart():
         height = y + h
 
 
-        im = Image.open(BytesIO(png))
+        im = Image.open(BytesIO(png)
+
         im = im.crop((int(x), int(y), int(width), int(height)))
         # im.save(path + 'image.png')
 
