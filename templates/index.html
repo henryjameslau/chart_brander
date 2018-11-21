@@ -26,6 +26,8 @@
 </head>
 <body>
 <div align="center">
+  <p>To prevent cached responses from the browser: - press F12 or right click > inspect - click network tab - check "Disable cache".</p>
+
   <h1>Enter information:</h1>
   <form  action="{{ url_for('chart') }}" method="post">
   <p>Title</p>
@@ -34,8 +36,8 @@
   <input id='change-link' type="text" name="url"  placeholder="Ex. /peoplepopulationandcommunity/leisureandtourism/bulletins/overseastravelandtourism/januaryfebruaryandmarch2018provisionalresults/7c41529a" required>
   <p>Source</p>
   <input id='change-source' type="text" name="source" required>
-  <p>File path</p>
-  <input id='change-path' type="text" name="path" required>
+  <!-- <p>File path</p>
+  <input id='change-path' type="text" name="path"> -->
   <input id='submit-title' type="submit" value="Submit">
   </form>
 
@@ -49,7 +51,7 @@
     <div id="foot">
       <div id="inner-container">
         <div id="source-container">
-          <span id='source'>Source: </span><span id='source-text'></span>
+          <!-- <span id='source'>Source: </span><span id='source-text'></span> -->
         </div>
         <div id="logo-container">
           <!-- <img src="logo.svg" alt=""> -->
