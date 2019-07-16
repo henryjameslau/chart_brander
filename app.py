@@ -101,7 +101,7 @@ def chart():
         height = y + h
 
 
-        im = Image.open(BytesIO(png)
+        im = Image.open(BytesIO(png))
 
         im = im.crop((int(x), int(y), int(width), int(height)))
         # im.save(path + 'image.png')
